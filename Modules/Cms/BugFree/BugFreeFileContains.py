@@ -26,7 +26,7 @@ def UrlProcessing(url):
         res = urllib.parse.urlparse('http://%s' % url)
     return res.scheme, res.hostname, res.port
 
-def medusa(Url,RandomAgent,Token,proxies=None):
+def medusa(Url,RandomAgent,proxies=None,**kwargs):
     proxies=Proxies().result(proxies)
     scheme, url, port = UrlProcessing(Url)
     if port is None and scheme == 'https':
@@ -49,14 +49,13 @@ def medusa(Url,RandomAgent,Token,proxies=None):
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
         }
 
-        s = requests.session()
-        resp = s.post(payload_url,headers=headers,data=data, proxies=proxies,timeout=6, verify=False)
+        resp = requests.post(payload_url,headers=headers,data=data, proxies=proxies,timeout=6, verify=False)
         con = resp.text
         code = resp.status_code
         if con.find("System")!=-1 and con.find("Build Date")!=-1:
             Medusa = "{}存在BugFree文件包含漏洞\r\n 验证数据:\r\nUrl:{}\r\n返回内容:{}\r\n".format(url,payload_url,con)
             _t=VulnerabilityInfo(Medusa)
-            VulnerabilityDetails(_t.info, url, Token).Write()  # 传入url和扫描到的数据
+            VulnerabilityDetails(_t.info, url, **kwargs).Write()  # 传入url和扫描到的数据
             WriteFile().result(str(url), str(Medusa))  # 写入文件，url为目标文件名统一传入，Medusa为结果
     except Exception as e:
         _ = VulnerabilityInfo('').info.get('algroup')

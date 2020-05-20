@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Web.api',
+    'Web.Api',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +56,7 @@ ROOT_URLCONF = 'Web.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR+"\\Web", 'api')],#这边要设置绝对路才能访问到templates文件
+        'DIRS': [os.path.join(BASE_DIR+"\\Web", 'Api')],#这边要设置绝对路才能访问到templates文件
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,8 +122,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 #celery
-CELERY_RESULT_BACKEND='redis://:medusa@localhost:6379/6'
-CELERY_BROKER_URL='redis://:medusa@localhost:6379/6'
+CELERY_RESULT_BACKEND='redis://:medusa@10.211.55.3:6379/6'
+CELERY_BROKER_URL='redis://:medusa@10.211.55.3:6379/6'
 '''
 
 CELERY_RESULT_BACKEND='redis://:password@host:port/db'

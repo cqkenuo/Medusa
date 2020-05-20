@@ -15,7 +15,7 @@ from Modules.Mongo import Mongo
 from Modules.OA import Oa
 from Modules.Windows import Windows
 from Modules.Spring import Spring
-from Modules.InformationLeakage.InformationLeakDetection import SensitiveFile
+from Modules.InformationLeakage import InformationLeakage
 
 from ClassCongregation import ThreadPool
 MedusaVulnerabilityList={
@@ -34,26 +34,23 @@ MedusaVulnerabilityList={
 "Mongo":Mongo.Main,
 "Spring":Spring.Main,
 "FastJson":FastJson.Main,
-"Windows":Windows.Main}
+"Windows":Windows.Main,
+"InformationLeakage":InformationLeakage.Main
+}
 
 @app.task
-def MedusaScan(Url,Token,Module,WebScanThreads,Values):
-    WebScanThreadPool =ThreadPool()#定义一个线程池
+def MedusaScan(Url,Module,ScanThreads,Values,proxies,**kwargs):
+    ScanThreadPool =ThreadPool()#定义一个线程池
     if Module=="all":
         for MedusaVulnerability in MedusaVulnerabilityList:
-            MedusaVulnerabilityList[MedusaVulnerability](WebScanThreadPool, Url, Values, Token)#调用列表里面的值
-        WebScanThreadPool.Start(WebScanThreads)
+            MedusaVulnerabilityList[MedusaVulnerability](ScanThreadPool, Url, Values, proxies,**kwargs)#调用列表里面的值
+
     else:
         try:
-            MedusaVulnerabilityList[Module](WebScanThreadPool, Url, Values, Token)  # 调用列表里面的值
-            WebScanThreadPool.Start(WebScanThreads)
+            MedusaVulnerabilityList[Module](ScanThreadPool, Url, Values, proxies,**kwargs)  # 调用列表里面的值
         except:#如果传入非法字符串会调用出错
             pass
-
-@app.task
-def InformationLeakage(Url,Token,ThreadNumber,proxies):
-    SensitiveFile().Domain(Url, Token, ThreadNumber, proxies)  # 单个url信息探测
-
+    ScanThreadPool.Start(ScanThreads)
 
 
 

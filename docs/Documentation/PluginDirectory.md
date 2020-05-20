@@ -197,11 +197,25 @@
   - `EcoCMS` 跨站脚本漏洞（CVE-2010-5046）
 
 - ##### Ecshop
-  - `Ecshop` 信息泄漏漏洞
-  - `Ecshop` 远程代码执行漏洞
+  - `Ecshop` 跨站脚本漏洞
+  - `Ecshop affiche.php` 跨站脚本漏洞
   - `Ecshop` SQL注入漏洞
-  - `Ecshop flow.php` SQL注入漏洞
   - `Ecshop category.php` SQL注入漏洞
+  - `Ecshop delete_cart_goods.php` SQL注入漏洞
+  - `Ecshop checkorder.php` SQL注入漏洞
+  - `Ecshop flow.php` SQL注入漏洞
+  - `Ecshop alipay.php` SQL注入漏洞
+  - `Ecshop api.php` SQL注入漏洞
+  - `Ecshop flow.php` SQL注入漏洞
+  - `Ecshop affiliate_ck.php` SQL注入漏洞
+  - `Ecshop shopinfo.php` SQL注入漏洞
+
+- ##### Emlog
+  - `Emlog` SQL注入漏洞
+
+- ##### Emlog
+  - `EmpireCMS list.php` SQL注入漏洞
+  - `EmpireCMS rate.php` SQL注入漏洞
 
 - ##### EnableQ
   - `EnableQ` 任意文件上传漏洞
@@ -316,8 +330,12 @@
 
 ##### Spring
   - `Spring` 反射文件下载漏洞（CVE-2020-5398）
-  - `Spring` Spring路径遍历漏洞（CVE-2019-3799）
-  - `Spring` Spring路径遍历漏洞（CVE-2020-5405）
+  - `Spring` 路径遍历漏洞（CVE-2019-3799）
+  - `Spring` 路径遍历漏洞（CVE-2020-5405）
+  -  `Spring`Boot框架SPEL表达式注入漏洞（CNVD-2016-04742）
+  -  `Spring`BootH2数据库JNDI注入
+  -  `Spring`DataCommons远程命令执行漏洞（CVE-2018-1273）
+  -  `Spring`SecurityOauth2远程代码执行（CVE-2018-1260）
 
 ##### Struts2
   - `Struts2` S2_001 远程代码执行漏洞

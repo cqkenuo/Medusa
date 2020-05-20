@@ -31,9 +31,8 @@ def UrlProcessing(url):
         res = urllib.parse.urlparse('http://%s' % url)
     return res.scheme, res.hostname, res.port
 
-def medusa(Url,RandomAgent,Token,proxies=None):
+def medusa(Url,RandomAgent,proxies=None,**kwargs):
     proxies=ClassCongregation.Proxies().result(proxies)
-
     scheme, url, port = UrlProcessing(Url)
     if port is None and scheme == 'https':
         port = 443
@@ -50,15 +49,13 @@ def medusa(Url,RandomAgent,Token,proxies=None):
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
         }
-
-        s = requests.session()
-        resp = s.get(payload_url, headers=headers, timeout=6,proxies=proxies,  verify=False)
+        resp = requests.get(payload_url, headers=headers, timeout=6,proxies=proxies,  verify=False)
         con = resp.text
         code = resp.status_code
         if code== 200 and con.find('DEFAULT_PDF_LIB_PATH') != -1 and con.find('DEFAULT_SQL_BACKUP_PATH') != -1:
             Medusa = "{}存在五车图书管理系统存在越权漏洞\r\n漏洞地址:\r\n{}\r\n漏洞详情:{}\r\n".format(url,payload_url,con)
             _t=VulnerabilityInfo(Medusa)
-            ClassCongregation.VulnerabilityDetails(_t.info, url,Token).Write()  # 传入url和扫描到的数据
+            ClassCongregation.VulnerabilityDetails(_t.info, url,**kwargs).Write()  # 传入url和扫描到的数据
             ClassCongregation.WriteFile().result(str(url),str(Medusa))#写入文件，url为目标文件名统一传入，Medusa为结果
     except Exception as e:
         _ = VulnerabilityInfo('').info.get('algroup')

@@ -1,5 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
+import { Message } from 'element-ui';
+
 // import Cookies from 'js-cookie'
 
 // const xsrfToken = Cookies.get('XSRF-TOKEN')
@@ -51,8 +53,8 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 0, it is judged as an error.
-    if (res.code !== 0) {
-      message.error(res.message || 'Error')
+    // if (res.code !== 0) {
+      // Message.error(res.message || 'Error')
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       // if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
       //   // to re-login
@@ -70,14 +72,14 @@ service.interceptors.response.use(
       //     })
       //   })
       // }
-      return Promise.reject(new Error(res.message || 'Error'))
-    } else {
+    //   return Promise.reject(new Error(res.message || 'Error'))
+    // } else {
       return res
-    }
+    // }
   },
   error => {
     console.log('err' + error) // for debug
-    message.error(error.message)
+    Message.error(error.message)
     return Promise.reject(error)
   }
 )
@@ -118,6 +120,21 @@ export function post (url, params, config) {
     service
       .post(url, params, {
         ...config
+      })
+      .then(response => {
+        resolve(response)
+      })
+      .catch(err => {
+        reject(err)
+      })
+  })
+}
+export function postDownload (url, params, config) {
+  return new Promise((resolve, reject) => {
+    service
+      .post(url, params, {
+        ...config,
+        responseType:'blob'
       })
       .then(response => {
         resolve(response)

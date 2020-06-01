@@ -48,10 +48,10 @@ npm run build
 │─util                        #项目全局工具类方法放这里
 │
 │─views                       #项目页面开发地址，新建的页面放这里
-│     │
-│     └─Login                 #登陆页demo
-│     │
-│     └─Regist                #注册页demo
+│  │
+│  └─Login                    #登陆页demo
+│  │
+│  └─Regist                   #注册页demo
 │
 │─faceConfig                  #项目全局配置放这里，如接口路径basePath: 'http://3.12.71.147:9999/api/',
 │

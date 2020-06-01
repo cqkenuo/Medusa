@@ -54,7 +54,7 @@ def medusa(Url,RandomAgent,proxies=None,**kwargs):
 
     try:
         resp = requests.get(payload_url,headers=headers, proxies=proxies,timeout=5,allow_redirects=False)
-        con = resp.headers['Location']
+        con = resp.headers.get('Location')
         code = resp.status_code
         if code==302 and con.lower().find('54289')!=-1:
             Medusa = "{} 存在Struts2远程代码执行漏洞\r\n漏洞详情:\r\n影响版本:版本低于<=Struts2_3_34,Struts2_5_16\r\nPayload:{}\r\n".format(url, payload_url)
@@ -64,4 +64,4 @@ def medusa(Url,RandomAgent,proxies=None,**kwargs):
     except Exception as e:
         _ = VulnerabilityInfo('').info.get('algroup')
         ClassCongregation.ErrorHandling().Outlier(e, _)
-        _l = ClassCongregation.ErrorLog().Write(url, _)  # 调用写入类
+        _l = ClassCongregation.ErrorLog().Write("Plugin Name:"+_+" || Target Url:"+url,e)#调用写入类

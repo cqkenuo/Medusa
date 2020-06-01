@@ -56,7 +56,7 @@ def medusa(Url,RandomAgent,proxies=None,**kwargs):
         resp = s.get(payload_url,headers=headers, timeout=6,proxies=proxies, verify=False)
         con=resp.text
         dec=resp.content[10:]
-        resph= resp.headers['Set-Cookie']
+        resph= resp.headers.get('Set-Cookie')
         code = resp.status_code
         if code == 200 and resp.headers['Content-Type']=='text/html; charset=UTF-8' and resph.find('ecology') != -1 :
             k = pyDes.des(key, pyDes.ECB, '\0' * 8, pad=None, padmode=pyDes.PAD_PKCS5)
@@ -68,6 +68,6 @@ def medusa(Url,RandomAgent,proxies=None,**kwargs):
     except Exception as e:
         _ = VulnerabilityInfo('').info.get('algroup')
         ClassCongregation.ErrorHandling().Outlier(e, _)
-        _l = ClassCongregation.ErrorLog().Write(url, _)  # 调用写入类
+        _l = ClassCongregation.ErrorLog().Write("Plugin Name:"+_+" || Target Url:"+url,e)#调用写入类
 
 

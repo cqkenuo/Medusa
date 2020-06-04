@@ -237,6 +237,12 @@
   - `EuseTMS xinqing.aspx` SQL注入漏洞
   - `EuseTMS download.aspx` SQL注入漏洞
 
+- ##### ExponentCMS
+  - `ExponentCMS` 反射型XSS漏洞
+  
+- ##### ExtMail
+  - `ExtMail` SQL注入漏洞
+  
 - ##### FiveClib
   - `FiveClib` 任意文件下载漏洞
   - `FiveClib` 任意文件遍历漏洞
@@ -388,3 +394,8 @@
 - `WebLogic` XML Decoder反序列化漏洞（CVE-2017-10271）
 - `Weblogic`服务器端请求伪造漏洞（CVE-2014-4210）
 - `Weblogic`任意文件上传漏洞（CVE-2018-2894）
+- `Weblogic`WLS核心组件反序列化命令执行漏洞（CVE-2016-0638）
+- `Weblogic`T3反序列化命令执行漏洞（CVE-2016-3510）
+- `Weblogic`反序列化命令执行漏洞（CVE-2018-2628）
+- `Weblogic`反序列化命令执行漏洞（CVE-2017-3248）
+- `Weblogic`反序列化命令执行漏洞（CVE-2018-2893）

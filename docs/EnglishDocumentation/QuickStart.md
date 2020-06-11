@@ -127,20 +127,17 @@ Next run the following command to start scanning
 python3 MedusaScan.py -f Ascotbe.txt #Your files are best placed in the same level as MedusaScan
 ```
 
-#### ~~0x03 Perform database weak password detection on the target website~~
+#### ~~0x03 Link crawling in JavaScript on the target website~~
 
-This function is commented because not very useful now, if you want to use `/Medusa/Password.txt` this is the path of your file
-```bash
-python3 MedusaScan.py -u https://www.ascotbe.com -sp /Medusa/Password.txt -su /Medusa/Username.txt 
-```
-
-#### 0x04 Link crawling in JavaScript on the target website
+This function is commented because not very useful now
 
 ```bash
 python3 MedusaScan.py -u https://www.ascotbe.com -j
 ```
 
 #### 0x04 Collect subdomains for the target website
+
+The scan result is in the `ScanResult` directory, only the domain name is supported and the **IP** form is not supported
 
 ```bash
 python3 MedusaScan.py -u https://www.ascotbe.com -s
@@ -158,7 +155,7 @@ Supported parameters：`firefox`，`ie`，`msie`，`opera`，`chrome`，`AppleWe
 
 Currently supports common browsers, 3 of which are listed below (case sensitive)
 
-```
+```bash
 python3 MedusaScan.py -u https://www.ascotbe.com -a firefox
 python3 MedusaScan.py -u https://www.ascotbe.com -a ie
 python3 MedusaScan.py -u https://www.ascotbe.com -a Gecko
@@ -166,17 +163,15 @@ python3 MedusaScan.py -u https://www.ascotbe.com -a Gecko
 
 You can also customize the `header` parameter, remember to add double quotes to the custom` header` containing `" "`, if your `header` is not compliant, it will not prompt an error
 
-```
+```bash
 python3 MedusaScan.py -u https://www.ascotbe.com -a "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.2117.157 Safari/537.36"
 ```
-
-
 
 #### 0x07 Scanning for single modules
 
 Please use the name supported by the module for the root folder. A folder name corresponds to a module, and please pay attention to capitalization. It is really incomprehensible. Please refer to [in this file](https://www.ascotbe.com/Medusa/Documentation/#/PluginDirectory) name
 
-```
+```bash
 python3 MedusaScan.py -u https://www.ascotbe.com -m Struts2
 ```
 

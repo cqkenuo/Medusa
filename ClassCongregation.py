@@ -17,7 +17,6 @@ import multiprocessing
 from typing import List, Dict, Tuple, Any
 import threading
 import subprocess
-
 from config import ceye_dnslog_url, ceye_dnslog_key, debug_mode,dnslog_name
 
 #########
@@ -35,23 +34,40 @@ def IpProcess(Url: str) -> str:
     return (res.hostname)
 
 
-LoopholesList = []  # 漏洞名称列表
 
+class NumberOfLoopholes:
 
-def NumberOfLoopholes():  # 漏洞个数输出函数以及名称的函数
-    print(
-        "\033[32m[ ! ] The number of vulnerabilities scanned was:\033[0m" + "\033[36m {}             \033[0m".format(
-            len(LoopholesList)))
-    for i in LoopholesList:
-        time.sleep(0.1)  # 暂停不然瞬间刷屏
-        print("\033[35m[ ! ] {}\033[0m".format(i))
-    LoopholesList.clear()  # 清空容器这样就不会出问题了
+    def WriteVulnerabilityName(self,FileName,Medusa):#把漏洞名字写到文件中
+        self.FileName=FileName
+        if sys.platform == "win32" or sys.platform == "cygwin":
+            self.FilePath = GetRootFileLocation().Result()+ "\\Temp\\" + self.FileName + ".txt"  # 不需要输入后缀，只要名字就好
+        elif sys.platform == "linux" or sys.platform == "darwin":
+            self.FilePath = GetRootFileLocation().Result() + "/Temp/" + self.FileName + ".txt"  # 不需要输入后缀，只要名字就好
+        regular_match_results = re.search(r'存在([\w\u4e00-\u9fa5!@#$%^*()&-=+_`~/?.,<>\\|\[\]{}]*)', Medusa).group(
+            0)  # 正则匹配，匹配存在后面的所有字符串，直到换行符结束
+        with open(self.FilePath, 'a+', encoding='utf-8') as f:  # 如果filename不存在会自动创建， 'w'表示写数据，写之前会清空文件中的原有数据！
+            if regular_match_results=="存在":
+                pass
+            else:
+                f.write(regular_match_results + "\n")
+    def Result(self,FileName):  # 漏洞个数输出函数以及名称的函数
+        LoopholesList=[]#创建列表存放漏洞
+        if sys.platform == "win32" or sys.platform == "cygwin":
+            self.FilePath = GetRootFileLocation().Result() + "\\Temp\\" + FileName + ".txt"  # 不需要输入后缀，只要名字就好
+        elif sys.platform == "linux" or sys.platform == "darwin":
+            self.FilePath = GetRootFileLocation().Result() + "/Temp/" + FileName + ".txt"  # 不需要输入后缀，只要名字就好
 
+        with open(self.FilePath, encoding='utf-8') as f:
+            for i in f:  # 设置头文件使用的字符类型和开头的名字
+                LoopholesList.append(i.strip("\r\n"))#传到列表里面
 
-def BotNumberOfLoopholes():  # 机器人用的漏洞个数
-    bot_loopholes_number = len(LoopholesList)
-    LoopholesList.clear()
-    return bot_loopholes_number
+        print(
+            "\033[32m[ ! ] The number of vulnerabilities scanned was:\033[0m" + "\033[36m {}             \033[0m".format(
+                len(LoopholesList)))
+        for i in LoopholesList:
+            time.sleep(0.1)  # 暂停不然瞬间刷屏
+            print("\033[35m[ ! ] {}\033[0m".format(i))
+        LoopholesList.clear()  # 清空容器这样就不会出问题了
 
 
 class WriteFile:  # 写入文件类
@@ -63,10 +79,11 @@ class WriteFile:  # 写入文件类
             self.FilePath = GetRootFileLocation().Result() + "/ScanResult/" + self.FileName + ".txt"  # 不需要输入后缀，只要名字就好
         with open(self.FilePath, 'a+', encoding='utf-8') as f:  # 如果filename不存在会自动创建， 'w'表示写数据，写之前会清空文件中的原有数据！
             f.write(Medusa + "\n")
-        regular_match_results = re.search(r'存在([\w\u4e00-\u9fa5!@#$%^*()&-=+_`~/?.,<>\\|\[\]{}]*)', Medusa).group(
-            0)  # 正则匹配，匹配存在后面的所有字符串，直到换行符结束
-        LoopholesList.append(regular_match_results)  # 每调用一次就往列表中写入存在漏洞的名称漏洞
-
+        NumberOfLoopholes().WriteVulnerabilityName(self.FileName,Medusa)#把扫描到的漏洞全发送到这个函数中，然后把文件名也发送过去
+    def GetFileName(self,Url):
+        scheme,url, port = UrlProcessing().result(Url)
+        self.result(url,"存在")
+        return self.FileName
 
 class AgentHeader:  # 使用随机头类
     def result(self, Values: str) -> str:  # 使用随机头传入传入参数
@@ -531,21 +548,18 @@ class ThreadPool:  # 线程池，适用于单个插件
         self.ThreaList = []  # 存放线程列表
         self.text = 0  # 统计线程数
 
-    def Append(self, plugin, url, Values,proxies,**kwargs):
+    def Append(self, plugin,**kwargs):
         self.text += 1
-        ua = AgentHeader().result(Values)
-        Uid=kwargs.get("Uid")
-        Sid=kwargs.get("Sid")
-        self.ThreaList.append(threading.Thread(target=plugin, args=(url, ua, proxies,),kwargs={"Uid":Uid,"Sid":Sid}))
+        self.ThreaList.append(threading.Thread(target=plugin,kwargs=kwargs))
 
-    def Start(self):
+    def Start(self,ThreadNumber):
         for t in self.ThreaList:  # 开启列表中的多线程
             t.start()
-            # while True:
-            #     # 判断正在运行的线程数量,如果小于5则退出while循环,
-            #     # 进入for循环启动新的进程.否则就一直在while循环进入死循环
-            #     if (len(threading.enumerate()) < ThreadNumber):
-            #         break
+            while True:
+                # 判断正在运行的线程数量,如果小于5则退出while循环,
+                # 进入for循环启动新的进程.否则就一直在while循环进入死循环
+                if (len(threading.enumerate()) < ThreadNumber):
+                    break
         for p in self.ThreaList:
             p.join()
         self.ThreaList.clear()  # 清空列表，防止多次调用导致重复使用

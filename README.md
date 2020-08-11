@@ -3,7 +3,7 @@
  <p align="center">
     <a href="https://github.com/Ascotbe/Medusa"><img alt="Release" src="https://img.shields.io/badge/Ascotbe-Medusa-green"></a>
     <a href="https://github.com/Ascotbe/Medusa"><img alt="Release" src="https://img.shields.io/badge/python-3.7+-blueviolet"></a>
-    <a href="https://github.com/Ascotbe/Medusa"><img alt="Release" src="https://img.shields.io/badge/Version-0.87-red"></a>
+    <a href="https://github.com/Ascotbe/Medusa"><img alt="Release" src="https://img.shields.io/badge/Version-0.88-red"></a>
     <a href="https://github.com/Ascotbe/Medusa"><img alt="Release" src="https://img.shields.io/badge/LICENSE-GPL-ff69b4"></a>
 	<a href="https://github.com/ascotbe/Medusa/stargazers"><img alt="Release" src="https://img.shields.io/github/stars/ascotbe/Medusa.svg"></a>
 	<a href="https://github.com/Ascotbe/Medusa"><img alt="Release" src="https://img.shields.io/badge/Plugin-200+-success"></a>
@@ -20,8 +20,6 @@
 > The project development manpower is insufficient. If you find a problem or have comments, please contact us.
 >
 > `bash` Ver. Online
->
-> `Bot` Ver. Online
 >
 > `Web` Ver. Under development
 
@@ -74,17 +72,11 @@ git config --global https.proxy https://127.0.0.1:1080
 | -f   | 1        | The filename includes urls that want to scan.                              | `-u` or `-f` must exists one and only one                         |
 | -p | 1 | You need to fill in the IP of your proxy, if you have a port you need to bring the port | to use BURP as a proxy then you should pass in 127.0.0.1:8080 |
 | -m   | 1        | Scan for single module,such as: Struts2 or Apache, etc.                  | The specific content can be entered by the corresponding name in the project Modules folder. |
-| -t   | 1        | Processes usage setting, default(-t 15)                                    |                                                           None   |
+| -t   | 1        | Processes usage setting, default(-t 5)                                    |                                                           None   |
 |-s    |1       | Enable subdomain detection| |
 |-l    |0       | List interactive command execution plugins| This function has not been written yet|
 |-e    |1       | You need to use the vulnerability, please use -l to query| |
 
-### :green_book:`Bot` Ver. document
-
-```html
-# How to use BOT, please look at the connection
-http://medusa.ascotbe.com/EnglishDocumentation/#/Bot
-```
 
 ### :four_leaf_clover:Updating logs
 
